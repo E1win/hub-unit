@@ -1,9 +1,15 @@
 #include <Arduino.h>
+#include "App.h"
 
-void setup() {
-  // put your setup code here, to run once:
+App app;
+
+void setup()
+{
+  app.Run();
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
+void loop()
+{
+  // Delay to allow IDLE task time to execute.
+  delay(100);
 }
