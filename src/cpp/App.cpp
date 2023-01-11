@@ -12,14 +12,29 @@ void App::Run()
     {
     }
 
-    Serial.println("Starting Program");
+    Serial.println("Starting Program...");
 
     // Initialize sensors
     Sensors::Init();
+
+    m_dataReceiver.Init();
 
     // Initialize display
     m_display.Init();
 
     // Update display
     m_display.Update();
+
+    while (true)
+    {
+        // Can probably refactor this to avoid having to loop
+
+        if (DataReceiver::dataReceived)
+        {
+            Serial.println("App: New Data Received");
+            m_display.Update();
+        }
+
+        delay(500);
+    }
 }

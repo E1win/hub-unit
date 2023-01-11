@@ -5,6 +5,7 @@
 
 #include "./Data/Sensors.h"
 #include "./Interface/Display.h"
+#include "./Net/DataReceiver.h"
 
 class App
 {
@@ -15,4 +16,5 @@ public:
 
 private:
     Display m_display;
+    DataReceiver m_dataReceiver;
 };

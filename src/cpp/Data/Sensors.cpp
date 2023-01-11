@@ -39,6 +39,19 @@ bool Sensors::GetSensorStatus(int id)
     return false;
 }
 
+void Sensors::SetSensorStatus(int id, bool status)
+{
+    if (IDInRange(id))
+    {
+        sensorArr[id].status = status;
+    }
+    else
+    {
+        Serial.print("Given ID Not In Range: ");
+        Serial.println(id);
+    }
+}
+
 bool Sensors::IDInRange(int id)
 {
     return id >= 0 && id < SENSOR_COUNT;
