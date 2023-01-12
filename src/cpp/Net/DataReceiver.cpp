@@ -47,6 +47,9 @@ void DataReceiver::Init()
     // Set WiFi mode to station
     WiFi.mode(WIFI_MODE_STA);
 
+    Serial.println("MAC ADDRESS:");
+    Serial.println(WiFi.macAddress());
+
     ESPNow.set_mac(mac);
     WiFi.disconnect();
 
