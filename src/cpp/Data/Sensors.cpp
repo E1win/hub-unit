@@ -26,6 +26,34 @@ void Sensors::Init()
     }
 }
 
+void Sensors::GetSensorData(
+    int id,
+    bool *outStatus,
+    float *outTemperature,
+    float *outIdealTemperature,
+    float *outHumidity,
+    float *outIdealHumidity)
+{
+    if (!IDInRange(id))
+    {
+        Serial.println("Given Sensor ID not in range, returning default values");
+
+        *outStatus = false;
+        *outTemperature = 0.f;
+        *outIdealTemperature = 0.f;
+        *outHumidity = 0.f;
+        *outIdealHumidity = 0.f;
+    }
+
+    *outStatus = sensorArr[id].status;
+
+    // TEMPORARY VALUES FOR TESTING
+    *outTemperature = 20.f;
+    *outIdealTemperature = 20.f;
+    *outHumidity = 20.f;
+    *outIdealHumidity = 20.f;
+}
+
 bool Sensors::GetSensorStatus(int id)
 {
     if (IDInRange(id))

@@ -23,7 +23,7 @@ void App::Run()
     m_display.Init();
 
     // Update display
-    m_display.Update();
+    m_display.ReloadPage();
 
     while (true)
     {
@@ -35,6 +35,8 @@ void App::Run()
             m_display.Update();
         }
 
-        delay(500);
+        delay(1000);
+
+        m_display.LoadNextPage();
     }
 }

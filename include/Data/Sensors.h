@@ -10,6 +10,14 @@ public:
 
     static bool GetSensorStatus(int id);
 
+    static void GetSensorData(
+        int id,
+        bool *outStatus,
+        float *outTemperature,
+        float *outIdealTemperature,
+        float *outHumidity,
+        float *outIdealHumidity);
+
     static void SetSensorStatus(int id, bool status);
 
 private:
