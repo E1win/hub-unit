@@ -16,6 +16,7 @@ void Display::Init()
     m_tft.setRotation(1);
     m_tft.setTextDatum(MC_DATUM);
 
+    m_sprite.setTextDatum(TL_DATUM);
     m_sprite.createSprite(DISPLAY_HEIGHT, DISPLAY_WIDTH);
 
     Reset();
@@ -26,7 +27,7 @@ void Display::Reset()
     m_tft.fillScreen(TFT_BLACK);
 
     m_sprite.setTextSize(2);
-    m_sprite.setTextDatum(MC_DATUM);
+    m_sprite.setTextDatum(TL_DATUM);
     m_sprite.setTextColor(TFT_BLACK);
     m_sprite.fillRect(0, 0, DISPLAY_HEIGHT, DISPLAY_WIDTH, TFT_BLACK);
     m_sprite.pushSprite(0, 0);
@@ -47,10 +48,9 @@ void Display::LoadNextPage()
         // Set current page to next page
         if (currentPage != Sensor)
         {
+            Reset();
             currentPage = (Pages)(currentPage + 1);
         }
-
-        Reset();
     }
     else
     {
@@ -70,10 +70,9 @@ void Display::LoadPreviousPage()
         // Set current page to previous page
         if (currentPage != Overview)
         {
+            Reset();
             currentPage = (Pages)(currentPage - 1);
         }
-
-        Reset();
     }
     else
     {
@@ -89,12 +88,49 @@ void Display::LoadPage()
     {
     case Overview:
         pageIndex = 0;
+        m_sprite.setTextDatum(MC_DATUM);
 
         for (int i = 0; i < SENSOR_COUNT; i++)
         {
             Serial.print("Drawing status bar: ");
             Serial.println(i);
+            bool alarmGoingOff = Sensors::GetSensorStatus(i);
+
             DrawStatusBar(i, Sensors::GetSensorStatus(i));
+            if (alarmGoingOff)
+            {
+                float temperature, idealTemperature, humidity, idealHumidity, maxTemperatureDeviation, maxHumidityDeviation;
+
+                Sensors::GetSensorData(
+                    i,
+                    &alarmGoingOff,
+                    &temperature,
+                    &idealTemperature,
+                    &humidity,
+                    &idealHumidity,
+                    &maxTemperatureDeviation,
+                    &maxHumidityDeviation);
+
+                float xPos = i * m_barWidth + (m_barWidth / 2);
+                float yPos = DISPLAY_WIDTH - 10;
+
+                // replace background of sensor
+
+                if (abs(temperature - idealTemperature) >= maxTemperatureDeviation)
+                {
+                    m_sprite.drawString("C", xPos, yPos);
+                    yPos -= 20;
+                }
+
+                Serial.println(maxHumidityDeviation);
+                if (abs(humidity - idealHumidity) >= maxHumidityDeviation)
+                {
+                    m_sprite.drawString("RV", xPos, yPos);
+                }
+
+                // Draw icon of reason why alarm is going off
+                // put at bottom of bar
+            }
         }
         break;
     case Sensor:
@@ -111,9 +147,10 @@ void Display::Update()
 
 void Display::DrawPageSensor(int id)
 {
-    m_sprite.setTextColor(TFT_WHITE);
+    m_sprite.setTextColor(TFT_WHITE, TFT_BLACK, true);
 
-    float temperature, idealTemperature, humidity, idealHumidity;
+    float temperature, idealTemperature, humidity, idealHumidity, maxTemperatureDeviation, maxHumidityDeviation;
+
     bool status;
 
     Sensors::GetSensorData(
@@ -122,7 +159,9 @@ void Display::DrawPageSensor(int id)
         &temperature,
         &idealTemperature,
         &humidity,
-        &idealHumidity);
+        &idealHumidity,
+        &maxTemperatureDeviation,
+        &maxHumidityDeviation);
 
     Serial.println("Drawing Sensor Page using these values");
     Serial.println(id);
@@ -132,6 +171,10 @@ void Display::DrawPageSensor(int id)
     m_sprite.drawString(String(id), colOne, rowOne);
     m_sprite.drawString("Huidig", colTwo, rowOne);
     m_sprite.drawString("Gewenst", colThree, rowOne);
+
+    // BAR INDICATING ALARM STATUS
+    uint32_t color = status ? TFT_RED : TFT_GREEN;
+    m_sprite.fillRect(rowOne - yPadding, 0, 5, DISPLAY_WIDTH / 3, color);
 
     // DIVIDING LINE ROW 1 - ROW 2
     m_sprite.drawLine(0, rowTwo - yPadding, DISPLAY_HEIGHT, rowTwo - yPadding, TFT_WHITE);

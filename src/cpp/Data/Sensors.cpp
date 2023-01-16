@@ -8,6 +8,12 @@ namespace
     {
         int id;
         bool status;
+        float temperature;
+        float idealTemperature;
+        float humidity;
+        float idealHumidity;
+        float maxTemperatureDeviation;
+        float maxHumidityDeviation;
     } Sensor;
 
     Sensor sensorArr[SENSOR_COUNT];
@@ -22,7 +28,7 @@ void Sensors::Init()
     // Initialize Sensor Array
     for (int i = 0; i < SENSOR_COUNT; i++)
     {
-        sensorArr[i] = {i, DEFAULT_STATUS};
+        sensorArr[i] = {i, DEFAULT_STATUS, 10.f, 10.f, 10.f, 10.f, 2.f, 10.f};
     }
 }
 
@@ -32,7 +38,9 @@ void Sensors::GetSensorData(
     float *outTemperature,
     float *outIdealTemperature,
     float *outHumidity,
-    float *outIdealHumidity)
+    float *outIdealHumidity,
+    float *outMaxTemperatureDeviation,
+    float *outMaxHumidityDeviation)
 {
     if (!IDInRange(id))
     {
@@ -46,12 +54,12 @@ void Sensors::GetSensorData(
     }
 
     *outStatus = sensorArr[id].status;
-
-    // TEMPORARY VALUES FOR TESTING
-    *outTemperature = 20.f;
-    *outIdealTemperature = 20.f;
-    *outHumidity = 20.f;
-    *outIdealHumidity = 20.f;
+    *outTemperature = sensorArr[id].temperature;
+    *outIdealTemperature = sensorArr[id].idealTemperature;
+    *outHumidity = sensorArr[id].humidity;
+    *outIdealHumidity = sensorArr[id].idealHumidity;
+    *outMaxTemperatureDeviation = sensorArr[id].maxTemperatureDeviation;
+    *outMaxHumidityDeviation = sensorArr[id].maxHumidityDeviation;
 }
 
 bool Sensors::GetSensorStatus(int id)
@@ -67,11 +75,21 @@ bool Sensors::GetSensorStatus(int id)
     return false;
 }
 
-void Sensors::SetSensorStatus(int id, bool status)
+void Sensors::SetSensorData(
+    int id,
+    bool status,
+    float temperature,
+    float idealTemperature,
+    float humidity,
+    float idealHumidity)
 {
     if (IDInRange(id))
     {
         sensorArr[id].status = status;
+        sensorArr[id].temperature = temperature;
+        sensorArr[id].idealTemperature = idealTemperature;
+        sensorArr[id].humidity = humidity;
+        sensorArr[id].idealHumidity = idealHumidity;
     }
     else
     {

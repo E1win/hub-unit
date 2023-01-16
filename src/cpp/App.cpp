@@ -1,6 +1,7 @@
 #include "./App.h"
 
-App::App()
+App::App() : m_btn1(BUTTON1_PIN),
+             m_btn2(BUTTON2_PIN)
 {
 }
 
@@ -32,11 +33,18 @@ void App::Run()
         if (DataReceiver::dataReceived)
         {
             Serial.println("App: New Data Received");
-            m_display.Update();
+            m_display.ReloadPage();
         }
 
-        delay(1000);
+        if (m_btn1.IsPressed())
+        {
+            m_display.LoadNextPage();
+        }
+        else if (m_btn2.IsPressed())
+        {
+            m_display.LoadPreviousPage();
+        }
 
-        m_display.LoadNextPage();
+        delay(400);
     }
 }

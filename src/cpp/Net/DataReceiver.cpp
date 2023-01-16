@@ -9,6 +9,10 @@ namespace
     {
         int id;
         bool status;
+        float temperature;
+        float idealTemperature;
+        float humidity;
+        float idealHumidity;
     } data_message;
 
     // Create a data_message to store received data
@@ -24,9 +28,16 @@ namespace
 
         memcpy(&myData, data, sizeof(myData));
 
-        Sensors::SetSensorStatus(myData.id, myData.status);
+        // Sensors::SetSensorStatus(myData.id, myData.status);
+        Sensors::SetSensorData(
+            myData.id,
+            myData.status,
+            myData.temperature,
+            myData.idealTemperature,
+            myData.humidity,
+            myData.idealHumidity);
 
-        Serial.print("New status from sensor " + String(myData.id) + ": ");
+        Serial.print("New data from sensor " + String(myData.id) + ": ");
 
         Serial.println(myData.status);
 

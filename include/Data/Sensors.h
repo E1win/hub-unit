@@ -16,9 +16,19 @@ public:
         float *outTemperature,
         float *outIdealTemperature,
         float *outHumidity,
-        float *outIdealHumidity);
+        float *outIdealHumidity,
+        float *outMaxTemperatureDeviation,
+        float *outMaxHumidityDeviation);
 
     static void SetSensorStatus(int id, bool status);
+
+    static void SetSensorData(
+        int id,
+        bool status,
+        float temperature,
+        float idealTemperature,
+        float humidity,
+        float idealHumidity);
 
 private:
     Sensors();
