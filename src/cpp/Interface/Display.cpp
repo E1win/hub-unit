@@ -92,8 +92,6 @@ void Display::LoadPage()
 
         for (int i = 0; i < SENSOR_COUNT; i++)
         {
-            Serial.print("Drawing status bar: ");
-            Serial.println(i);
             bool alarmGoingOff = Sensors::GetSensorStatus(i);
 
             DrawStatusBar(i, Sensors::GetSensorStatus(i));
@@ -114,22 +112,18 @@ void Display::LoadPage()
                 float xPos = i * m_barWidth + (m_barWidth / 2);
                 float yPos = DISPLAY_WIDTH - 10;
 
-                // replace background of sensor
-
+                // Draw icon of reason why alarm is going off
+                // put at bottom of bar
                 if (abs(temperature - idealTemperature) >= maxTemperatureDeviation)
                 {
                     m_sprite.drawString("C", xPos, yPos);
                     yPos -= 20;
                 }
 
-                Serial.println(maxHumidityDeviation);
                 if (abs(humidity - idealHumidity) >= maxHumidityDeviation)
                 {
                     m_sprite.drawString("RV", xPos, yPos);
                 }
-
-                // Draw icon of reason why alarm is going off
-                // put at bottom of bar
             }
         }
         break;
@@ -163,10 +157,6 @@ void Display::DrawPageSensor(int id)
         &maxTemperatureDeviation,
         &maxHumidityDeviation);
 
-    Serial.println("Drawing Sensor Page using these values");
-    Serial.println(id);
-    Serial.println(status);
-    Serial.println(temperature);
     // ROW 1
     m_sprite.drawString(String(id), colOne, rowOne);
     m_sprite.drawString("Huidig", colTwo, rowOne);

@@ -28,12 +28,11 @@ void App::Run()
 
     while (true)
     {
-        // Can probably refactor this to avoid having to loop
-
         if (DataReceiver::dataReceived)
         {
-            Serial.println("App: New Data Received");
             m_display.ReloadPage();
+
+            DataReceiver::dataReceived = false;
         }
 
         if (m_btn1.IsPressed())
